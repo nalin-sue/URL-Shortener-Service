@@ -1,0 +1,4 @@
+URL_SHORTENER_DB_URL=jdbc:postgresql://localhost:5432/urlshortener
+URL_SHORTENER_DB_USERNAME=postgres
+URL_SHORTENER_DB_PASSWORD=
+URL_SHORTENER_JWT_SECRET=your-own-random-secret-at-least-32-characters

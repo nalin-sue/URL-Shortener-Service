@@ -6,12 +6,19 @@
 
 ## Installation
 
+### Project Setup
+1. Create `application-local.properties` by copying `application-local.properties.example`.
+2. Fill in the required values in `application-local.properties`, never push them to git.
+4. Run the application.
+5. Try sending requests using [Swagger UI](http://localhost:8080/swagger-ui.html) in your browser.
+
 ### Database Setup
 1. Install PostgreSQL.
-2. Create a database named `urlshortener` in pgAdmin.
-3. Update `spring.datasource.url`, `spring.datasource.username` and `spring.datasource.password` in `application.properties` with your local PostgreSQL configuration.
-> **For production**, use a cloud secret management service such as  `AWS Secrets Manager` or `Azure Key Vault` to store database credentials.
-4. Run the application.
+2. Create a database named `urlshortener` in your preferred PostgreSQL client such as pgAdmin, DBeaver
+3. Use `database/schema.sql` to create tables in the database.
+
+### Production Setup
+- Configure deployment to use `URL_SHORTENER_*` environment variables from **AWS Secrets Manager**, which override values in `application-local.properties`.
 
 ### Notes
 - `Tomcat`, `Jackson`, `logback` versions has been overridden for security. Remove later when Spring Boot updates to safer versions. 
