@@ -36,9 +36,7 @@ public class AuthService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password is too long");
         }
 
-        User user = new User();
-        user.setEmail(email);
-        user.setPasswordHash(passwordEncoder.encode(request.password()));
+        User user = new User(email, passwordEncoder.encode(request.password()));
         userRepository.save(user);
     }
 
