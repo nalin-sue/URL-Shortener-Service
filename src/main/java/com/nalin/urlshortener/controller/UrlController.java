@@ -6,6 +6,7 @@ import com.nalin.urlshortener.service.UrlService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,7 +21,7 @@ public class UrlController {
 
     @PostMapping("/shorten")
     @ResponseStatus(HttpStatus.CREATED)
-    public ShortenResponse shortenUrl(@Valid @RequestBody ShortenRequest request) {
-        return urlService.shortenUrl(request.originalUrl(), null); // Guest, TODO: Add user
+    public ShortenResponse shortenUrl(@Valid @RequestBody ShortenRequest request, @AuthenticationPrincipal Long userId) {
+        return urlService.shortenUrl(request.originalUrl(), userId); // Guest's userId = null
     }
 }

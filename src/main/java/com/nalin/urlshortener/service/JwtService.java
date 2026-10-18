@@ -17,12 +17,12 @@ public class JwtService {
     public JwtService(
             @Value("${jwt.secret}") String secret,
             @Value("${jwt.expiration-ms}") long expiration
-    ){
+    ) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.expiration = expiration;
     }
 
-    public String generateToken(Long userId){
+    public String generateToken(Long userId) {
         Date now = new Date();
         Date expiry = new Date(now.getTime() + expiration);
         return Jwts.builder()
@@ -31,5 +31,15 @@ public class JwtService {
                 .expiration(expiry)
                 .signWith(key)
                 .compact();
+    }
+
+    public Long getUserId(String token) {
+        String subject = Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token) // Validate token, throws if invalid or expired
+                .getPayload()
+                .getSubject();
+        return Long.valueOf(subject);
     }
 }
