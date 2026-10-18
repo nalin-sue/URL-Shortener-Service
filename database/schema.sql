@@ -12,4 +12,4 @@ CREATE TABLE IF NOT EXISTS urls (
     created_at TIMESTAMPTZ NULL DEFAULT now()
 );
 
-CREATE INDEX IF NOT EXISTS idx_url_user ON URLS(user_id);
+CREATE INDEX IF NOT EXISTS idx_url_user ON urls(user_id);
