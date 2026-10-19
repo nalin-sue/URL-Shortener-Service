@@ -32,4 +32,10 @@ public class UrlController {
     public List<UrlResponse> getLoggedInUserUrls(@AuthenticationPrincipal Long userId) {
         return urlService.getUserUrls(userId);
     }
+
+    @DeleteMapping("/urls/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUrl(@PathVariable Long id, @AuthenticationPrincipal Long userId) {
+        urlService.deleteUrl(id, userId);
+    }
 }

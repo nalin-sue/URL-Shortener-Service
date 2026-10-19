@@ -62,6 +62,15 @@ public class UrlService {
                 ).toList();
     }
 
+    public void deleteUrl(Long id, Long userId) {
+        Url url = urlRepository.findByIdAndUserId(id, userId).orElseThrow(() -> {
+            log.debug("Url id '{}' not found for user '{}'", id, userId);
+            return new ResponseStatusException(HttpStatus.NOT_FOUND, "Short link not found");
+        });
+        urlRepository.delete(url);
+        log.info("User id '{}' deleted URL id '{}'", userId, id);
+    }
+
     private void validateUrl(String url) {
         URI uri;
         try {

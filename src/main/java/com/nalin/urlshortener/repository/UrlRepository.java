@@ -9,5 +9,6 @@ import java.util.Optional;
 public interface UrlRepository extends JpaRepository<Url, Long> {
     boolean existsByCode(String code);
     Optional<Url> findByCode(String code);
+    Optional<Url> findByIdAndUserId(Long id, Long userId);
     List<Url> findByUserIdOrderByCreatedAtDesc(Long userId); // Newest first
 }

@@ -10,7 +10,7 @@ public record RegisterRequest (
     @Email
     String email,
 
-    @Schema(example = "demo1234")
+    @Schema(example = "atleast8")
     @NotBlank
     @Size(min = 8, max = 72)
     String password
