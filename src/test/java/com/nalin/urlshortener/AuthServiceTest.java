@@ -27,11 +27,11 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class AuthServiceTest {
     @Mock
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Mock
-    JwtService jwtService;
-    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-    AuthService authService;
+    private JwtService jwtService;
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private AuthService authService;
 
     @BeforeEach
     void setUp() {
@@ -47,11 +47,11 @@ public class AuthServiceTest {
         // Check save() was called and get the User passed to it
         ArgumentCaptor<User> argumentCaptor = ArgumentCaptor.forClass(User.class);
         verify(userRepository).save(argumentCaptor.capture());
-        User saved = argumentCaptor.getValue();
+        User savedUser = argumentCaptor.getValue();
 
-        assertEquals("email@example.com", saved.getEmail()); // Saved as trimmed, lowercase
-        assertNotEquals("password", saved.getPasswordHash());
-        assertTrue(passwordEncoder.matches("password", saved.getPasswordHash()));
+        assertEquals("email@example.com", savedUser.getEmail()); // Saved as trimmed, lowercase
+        assertNotEquals("password", savedUser.getPasswordHash());
+        assertTrue(passwordEncoder.matches("password", savedUser.getPasswordHash()));
     }
 
     @Test
