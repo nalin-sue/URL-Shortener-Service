@@ -126,12 +126,32 @@ class UrlServiceTest {
     }
 
     @Test
-    void getUserUrls_passedReturnsEmptyList() { // A user with no short URLs gets an empty list, not an error
+    void getUserUrls_passedAndReturnsEmptyList() { // A user with no short URLs gets an empty list, not an error
         when(urlRepository.findByUserIdOrderByCreatedAtDesc(42L)).thenReturn(List.of());
 
         List<UrlResponse> result = urlService.getUserUrls(42L);
 
         assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void deleteUrl_passesAndDeletesUrlOwnedByUser() {
+        Url url= createSavedUrl(5L, "aBc123", "https://example.com/some/very/long/page", Instant.now());
+        when(urlRepository.findByIdAndUserId(5L,42L)).thenReturn(Optional.of(url));
+
+        urlService.deleteUrl(5L, 42L);
+
+        verify(urlRepository).delete(url);
+    }
+
+    @Test
+    void deleteUrl_rejectsUrlNotOwnedByUser(){
+        when(urlRepository.findByIdAndUserId(5L, 42L)).thenReturn(Optional.empty());
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> urlService.deleteUrl(5L, 42L));
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        verify(urlRepository, never()).delete(any());
     }
 
     private Url createSavedUrl(Long id, String code, String originalUrl, Instant createdAt) {
