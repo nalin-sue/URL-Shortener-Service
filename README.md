@@ -58,4 +58,4 @@ Import `postman/url-shortener.postman_collection.json` into Postman.
 
 ## References
 - [How to Setup PortgreSQL Connection](https://jdbc.postgresql.org/documentation/use/)
-- [Document on Design Decisions (Incompleted)](https://nalinsue.atlassian.net/wiki/external/NmE0Njk5OWZhOWI1NDY5ZjhmZGNlNTdhN2ZiYzE2OGE)
+- [Design Document](https://nalinsue.atlassian.net/wiki/external/NmE0Njk5OWZhOWI1NDY5ZjhmZGNlNTdhN2ZiYzE2OGE)

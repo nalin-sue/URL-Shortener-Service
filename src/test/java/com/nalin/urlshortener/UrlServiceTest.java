@@ -91,10 +91,10 @@ class UrlServiceTest {
 
     @Test
     void getOriginalUrl_passesAndReturnsWhenCodeExists() {
-        Url url = new Url("aB1cDE2", "https://example.com/some/very/long/page", null);
-        when(urlRepository.findByCode("aB1cDE2")).thenReturn(Optional.of(url));
+        Url url = new Url("aBc123", "https://example.com/some/very/long/page", null);
+        when(urlRepository.findByCode("aBc123")).thenReturn(Optional.of(url));
 
-        String result = urlService.getOriginalUrl("aB1cDE2");
+        String result = urlService.getOriginalUrl("aBc123");
 
         assertEquals("https://example.com/some/very/long/page", result);
     }
