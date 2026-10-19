@@ -47,7 +47,7 @@ The app starts at `http://localhost:8080`.
 
 ## Example API Request
 
-Import `postman/url-shortener.postman_collection.json` into Postman.
+Import `url-shortener.postman_collection.json` into Postman.
 
 ## Production Setup
 - Configure deployment to use `URL_SHORTENER_*` environment variables from **AWS Secrets Manager**, which override values in `application-local.properties`.
