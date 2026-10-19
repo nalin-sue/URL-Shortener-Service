@@ -40,6 +40,10 @@ public class UrlService {
         return new ShortenResponse(shortBaseUrl + "/" + code);
     }
 
+    public String getOriginalUrl(String code) {
+        return urlRepository.findByCode(code).map(Url::getOriginalUrl).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Short link not found"));
+    }
+
     private ResponseStatusException createBadRequestException(String message) {
         return new ResponseStatusException(HttpStatus.BAD_REQUEST, message);
     }

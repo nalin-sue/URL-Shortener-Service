@@ -9,9 +9,10 @@
 ### Project Setup
 1. Create `application-local.properties` by copying `application-local.properties.example`.
 2. Fill in the required values in `application-local.properties`, never push them to git.
-4. Run the application.
-5. Try sending requests using [Swagger UI](http://localhost:8080/swagger-ui.html) in your browser.
-6. For endpoints that need authorization, call `/api/login` and copy `token` from response. Click **Authorize** (top right) and paste token without `Bearer ` prefix.
+3. Run the application.
+4. Try sending requests using [Swagger UI](http://localhost:8080/swagger-ui.html) in your browser.
+5. For endpoints that need authorization, call `/api/login` and copy `token` from response. Click **Authorize** (top right) and paste token without `Bearer ` prefix.
+6.  For testing redirect URL, paste the short URL in a real browser address bar.
 
 ### Database Setup
 1. Install PostgreSQL.
