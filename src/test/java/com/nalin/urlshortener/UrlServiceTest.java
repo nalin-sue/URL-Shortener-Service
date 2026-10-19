@@ -1,6 +1,7 @@
 package com.nalin.urlshortener;
 
 import com.nalin.urlshortener.dto.ShortenResponse;
+import com.nalin.urlshortener.dto.UrlResponse;
 import com.nalin.urlshortener.entity.Url;
 import com.nalin.urlshortener.repository.UrlRepository;
 import com.nalin.urlshortener.service.UrlService;
@@ -11,16 +12,17 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-//
-//@ExtendWith(MockitoExtension.class)
 @ExtendWith(MockitoExtension.class)
 class UrlServiceTest {
     @Mock
@@ -98,7 +100,7 @@ class UrlServiceTest {
     }
 
     @Test
-    void getOriginalUrl_rejectsUnknownCode(){
+    void getOriginalUrl_rejectsUnknownCode() {
         when(urlRepository.findByCode("Unknown1")).thenReturn(Optional.empty());
 
         ResponseStatusException ex = assertThrows(ResponseStatusException.class, () -> urlService.getOriginalUrl("Unknown1"));
@@ -106,4 +108,37 @@ class UrlServiceTest {
         assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
     }
 
+    @Test
+    void getUserUrls_passesAndReturnsUserUrls() {
+        Instant newer = Instant.parse("2026-10-19T10:00:00Z");
+        Instant older = Instant.parse("2026-10-18T10:00:00Z");
+
+        Url newerUrl = createSavedUrl(2L, "dEf456", "https://example.com/newer/page", newer);
+        Url olderUrl = createSavedUrl(1L, "aBc123", "https://example.com/older/page", older);
+        when(urlRepository.findByUserIdOrderByCreatedAtDesc(42L)).thenReturn(List.of(newerUrl, olderUrl));
+
+        List<UrlResponse> result = urlService.getUserUrls(42L);
+        List<UrlResponse> expected = List.of(
+                new UrlResponse(2L, "dEf456", "https://short.example/dEf456", "https://example.com/newer/page", newer),
+                new UrlResponse(1L, "aBc123", "https://short.example/aBc123", "https://example.com/older/page", older)
+        );
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void getUserUrls_passedReturnsEmptyList() { // A user with no short URLs gets an empty list, not an error
+        when(urlRepository.findByUserIdOrderByCreatedAtDesc(42L)).thenReturn(List.of());
+
+        List<UrlResponse> result = urlService.getUserUrls(42L);
+
+        assertTrue(result.isEmpty());
+    }
+
+    private Url createSavedUrl(Long id, String code, String originalUrl, Instant createdAt) {
+        Url url = new Url(code, originalUrl, 42L);
+        // id and createdAt normally set by database, so set them manually for testing
+        ReflectionTestUtils.setField(url, "id", id);
+        ReflectionTestUtils.setField(url, "createdAt", createdAt);
+        return url;
+    }
 }
