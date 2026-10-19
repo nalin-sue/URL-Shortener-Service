@@ -13,6 +13,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -84,4 +86,24 @@ class UrlServiceTest {
         verify(urlRepository, times(2)).existsByCode(anyString());
         verify(urlRepository).save(any());
     }
+
+    @Test
+    void getOriginalUrl_passesAndReturnsWhenCodeExists() {
+        Url url = new Url("aB1cDE2", "https://example.com/some/very/long/page", null);
+        when(urlRepository.findByCode("aB1cDE2")).thenReturn(Optional.of(url));
+
+        String result = urlService.getOriginalUrl("aB1cDE2");
+
+        assertEquals("https://example.com/some/very/long/page", result);
+    }
+
+    @Test
+    void getOriginalUrl_rejectsUnknownCode(){
+        when(urlRepository.findByCode("Unknown1")).thenReturn(Optional.empty());
+
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class, () -> urlService.getOriginalUrl("Unknown1"));
+
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
+    }
+
 }
