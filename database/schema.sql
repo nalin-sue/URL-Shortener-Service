@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS urls (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     code TEXT NOT NULL UNIQUE,
     original_url TEXT NOT NULL,
-    user_id BIGINT NULL REFERENCES USERS(id),
-    created_at TIMESTAMPTZ NULL DEFAULT now()
+    user_id BIGINT NULL REFERENCES users(id),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 CREATE INDEX IF NOT EXISTS idx_url_user ON urls(user_id);

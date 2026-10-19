@@ -25,7 +25,7 @@ public class Url {
     private String originalUrl;
 
     @Column(name = "user_id")
-    private Long userId; //Guest's user_id = null
+    private Long userId; // Guest's user_id = null
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

@@ -46,8 +46,8 @@ public class UrlService {
 
     public String getOriginalUrl(String code) {
         return urlRepository.findByCode(code).map(Url::getOriginalUrl).orElseThrow(() -> {
-            log.debug("Code not found: '{}'", code);
-            return new ResponseStatusException(HttpStatus.NOT_FOUND, "Short link not found");
+            log.debug("Code not found '{}'", code);
+            return new ResponseStatusException(HttpStatus.NOT_FOUND, "Short URL not found");
         });
     }
 
@@ -64,8 +64,8 @@ public class UrlService {
 
     public void deleteUrl(Long id, Long userId) {
         Url url = urlRepository.findByIdAndUserId(id, userId).orElseThrow(() -> {
-            log.debug("Url id '{}' not found for user '{}'", id, userId);
-            return new ResponseStatusException(HttpStatus.NOT_FOUND, "Short link not found");
+            log.debug("URL id '{}' not found for user '{}'", id, userId);
+            return new ResponseStatusException(HttpStatus.NOT_FOUND, "Short URL not found");
         });
         urlRepository.delete(url);
         log.info("User id '{}' deleted URL id '{}'", userId, id);

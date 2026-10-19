@@ -36,7 +36,7 @@ class UrlServiceTest {
 
     @Test
     void shorten_passesAndSavesUrlForGuest() {
-        when(urlRepository.existsByCode(anyString())).thenReturn(false); // Short url link not exist yet
+        when(urlRepository.existsByCode(anyString())).thenReturn(false); // Short URL not exist yet
 
         ShortenResponse response = urlService.shortenUrl("https://example.com/some/very/long/page", null);
 
@@ -148,9 +148,9 @@ class UrlServiceTest {
     void deleteUrl_rejectsUrlNotOwnedByUser(){
         when(urlRepository.findByIdAndUserId(5L, 42L)).thenReturn(Optional.empty());
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> urlService.deleteUrl(5L, 42L));
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class, () -> urlService.deleteUrl(5L, 42L));
 
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
         verify(urlRepository, never()).delete(any());
     }
 
