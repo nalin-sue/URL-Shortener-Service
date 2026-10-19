@@ -45,7 +45,10 @@ public class UrlService {
     }
 
     public String getOriginalUrl(String code) {
-        return urlRepository.findByCode(code).map(Url::getOriginalUrl).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Short link not found"));
+        return urlRepository.findByCode(code).map(Url::getOriginalUrl).orElseThrow(() -> {
+            log.debug("Code not found: '{}'", code);
+            return new ResponseStatusException(HttpStatus.NOT_FOUND, "Short link not found");
+        });
     }
 
     public List<UrlResponse> getUserUrls(Long userId) {
@@ -59,32 +62,33 @@ public class UrlService {
                 ).toList();
     }
 
-    private ResponseStatusException createBadRequestException(String message) {
-        return new ResponseStatusException(HttpStatus.BAD_REQUEST, message);
-    }
-
     private void validateUrl(String url) {
         URI uri;
         try {
             uri = new URI(url);
         } catch (URISyntaxException e) {
-            throw createBadRequestException("Invalid URL");
+            throw createBadRequestException(url, "Invalid URL");
         }
 
         String scheme = uri.getScheme();
         if (scheme == null || !(scheme.equalsIgnoreCase("http") || scheme.equalsIgnoreCase("https"))) {
-            throw createBadRequestException("Only http and https link are allowed");
+            throw createBadRequestException(url, "Only http and https links are allowed");
         }
 
         String host = uri.getHost();
         if (host == null || !host.contains(".")) {
-            throw createBadRequestException("URL must have a valid domain, like example.com");
+            throw createBadRequestException(url, "URL must have a valid domain, like example.com");
         }
 
         String preparedHost = prepareHost(host);
         if (preparedHost.equals(appHost) || preparedHost.endsWith("." + appHost)) {
-            throw createBadRequestException("Cannot shorten a link from this site");
+            throw createBadRequestException(url, "Cannot shorten a link from this site");
         }
+    }
+
+    private ResponseStatusException createBadRequestException(String url, String message) {
+        log.debug("Rejected URL '{}' ({})", url, message);
+        return new ResponseStatusException(HttpStatus.BAD_REQUEST, message);
     }
 
     private String createUniqueCode() {
@@ -93,7 +97,9 @@ public class UrlService {
             if (!urlRepository.existsByCode(code)) {
                 return code;
             }
+            log.warn("Code '{}' already taken, retrying", code);
         }
+        log.error("Could not create a unique code after {} attempts", MAX_ATTEMPTS);
         throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Could not generate a unique code");
     }
 
