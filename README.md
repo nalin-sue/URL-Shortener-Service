@@ -30,7 +30,7 @@ The app starts at `http://localhost:8080`.
 2. For endpoints that need login, call `/api/login` and copy `token` from response. Click **Authorize** (top right) and paste token without `Bearer ` prefix.
 3. To test a redirect, paste the short URL in a real browser address bar.
 
-### Run Tests
+### 5. Run Tests
 ```bash
 ./mvnw test
 ```
